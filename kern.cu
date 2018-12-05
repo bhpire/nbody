@@ -4,6 +4,8 @@
 extern Z n;
 extern V *r, *v;
 
+V *dev_r, *dev_v;
+
 static inline void kick(double dt)
 {
   Z i, j;

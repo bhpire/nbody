@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "nbody.h"
 
+extern V *dev_r, *dev_v;
+
 Z n;
 V *r, *v;
 
@@ -56,12 +58,24 @@ double init(int N)
     v[i].z -= p.z;
   }
 
+  cudaMalloc((void **)&dev_r, sizeof(V) * n);
+  cudaMalloc((void **)&dev_v, sizeof(V) * n);
+  cudaMemcpy(dev_r, r, sizeof(V) * n, cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_v, v, sizeof(V) * n, cudaMemcpyHostToDevice);
+
   return 1.0e-5 / cbrt_n; /* time step size */
 }
 
 int dump(FILE *file)
 {
+  static Z first = 1;
   Z i;
+
+  if(first)
+    first = 0;
+  else
+    cudaMemcpy(r, dev_r, sizeof(V) * n, cudaMemcpyDeviceToHost);
+
   for(i = 0; i < n - 1; ++i)
     fprintf(file, "%g %g %g, ", r[i].x, r[i].y, r[i].z);
   fprintf(file, "%g %g %g\n", r[i].x, r[i].y, r[i].z);
