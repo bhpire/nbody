@@ -12,8 +12,10 @@ if len(sys.argv) == 1:
 input = sys.argv[1]
 name, _ = os.path.splitext(input)
 r = np.genfromtxt(name+'.out' if _ == '' else input)
+n = r.shape[1] // 3
 
-plt.plot(r[:,0], r[:,1])
+for i in range(n):
+    plt.plot(r[:,i*3+0], r[:,i*3+1])
 plt.axes().set_aspect('equal')
 
 plt.savefig(name+'.png')
