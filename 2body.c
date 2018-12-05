@@ -4,7 +4,7 @@
 static vector r1, r2;
 static vector v1, v2;
 
-double init(void)
+double init(int n)
 {
   r1.x = 1.0; r1.y = 0.0; r1.z = 0.0;
   v1.x = 0.0; v1.y = 0.6; v1.z = 0.0;
@@ -13,6 +13,8 @@ double init(void)
   v2.x = 0.0; v2.y =-0.6; v2.z = 0.0;
 
   return 1.0e-4; /* time step size */
+
+  (void)n; /* silence unused parameter warning */
 }
 
 int dump(FILE *file)

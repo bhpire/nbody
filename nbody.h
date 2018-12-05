@@ -7,7 +7,7 @@ typedef struct {
   double x, y, z;
 } vector;
 
-double init(void);
+double init(int);
 void evol(int, double);
 int dump(FILE *);
 

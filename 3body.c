@@ -4,7 +4,7 @@
 static vector r1, r2, r3;
 static vector v1, v2, v3;
 
-double init(void)
+double init(int n)
 {
   vector r[] = {{ 0.97000436, -0.24308753, 0.0},
                 {-0.97000436,  0.24308753, 0.0},
@@ -17,6 +17,8 @@ double init(void)
   v1 = v[0]; v2 = v[1]; v3 = v[2];
 
   return 1.0e-4; /* time step size */
+
+  (void)n; /* silence unused parameter warning */
 }
 
 int dump(FILE *file)

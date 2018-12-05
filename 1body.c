@@ -4,12 +4,14 @@
 static double rx, ry, rz;
 static double vx, vy, vz;
 
-double init(void)
+double init(int n)
 {
   rx = 1.0, ry = 0.0, rz = 0.0; /* initial position */
   vx = 0.0, vy = 1.2, vz = 0.0; /* initial velocity */
 
   return 1.0e-4; /* time step size */
+
+  (void)n; /* silence unused parameter warning */
 }
 
 int dump(FILE *file)

@@ -1,5 +1,6 @@
 #include "nbody.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <sys/time.h>
 
@@ -15,8 +16,9 @@ void handler(int signal)
 
 int main(int argc, char *argv[])
 {
-  const double dt = init();
+  const int    np = argc > 1 ? atoi(argv[1]) : 16; /* number of particles */
   const int    ns = 1000; /* number of sub-steps between outputs */
+  const double dt = init(np);
 
   char  name[1024];
   FILE *file;
