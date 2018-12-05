@@ -5,7 +5,8 @@
 extern V *dev_r, *dev_v;
 
 Z n;
-V *r, *v;
+
+static V *r, *v;
 
 static V sphere(void)
 {
