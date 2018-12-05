@@ -7,6 +7,8 @@ extern "C" {
 
 #include <stdio.h>
 
+#define TILE (64)
+
 typedef struct {
   double x, y, z;
 } vector;

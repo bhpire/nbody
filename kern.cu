@@ -7,14 +7,34 @@ V *dev_r, *dev_v;
 
 static __global__ void kick(V *v, V *r, R dt, Z n)
 {
-  Z i = blockIdx.x * blockDim.x + threadIdx.x;
+  __shared__ V cache[TILE];
+  V dt_a = {0.0, 0.0, 0.0};
+  V self = {0.0, 0.0, 0.0};
+
+  Z i = blockIdx.x * blockDim.x + threadIdx.x; /* my index */
   Z j;
 
-  if(i < n) {
-    V dt_a = {0.0, 0.0, 0.0};
+  /* If my index is valid, load my position */
+  if(i < n) self = r[i];
 
-    for(j = 0; j < n; ++j) {
-      V dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
+  /* For each block ... */
+  for(j = 0; j < gridDim.x; ++j) {
+    Z I = j * blockDim.x + threadIdx.x; /* the index of the other particle */
+    Z k;
+
+    /* If the index of the other particle is valid, load its position
+       into the cache.  Otherwise, use my position.  Note that
+       self-interaction vanishes because of softening */
+    cache[threadIdx.x] = (I < n) ? r[I] : self;
+    __syncthreads();
+
+    /* A subset of the particles are loaded into the cache.  We can
+       now compute my interaction with them. */
+    #pragma unroll 8
+    for(k = 0; k < TILE; ++k) {
+      V other  = cache[k];
+
+      V dr     = {self.x - other.x, self.y - other.y, self.z - other.z};
       R rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
       R dt_rrr = dt / (rr * sqrt(rr));
 
@@ -22,7 +42,9 @@ static __global__ void kick(V *v, V *r, R dt, Z n)
       dt_a.y -= dr.y * dt_rrr;
       dt_a.z -= dr.z * dt_rrr;
     }
+  }
 
+  if(i < n) {
     v[i].x += dt_a.x;
     v[i].y += dt_a.y;
     v[i].z += dt_a.z;
@@ -42,8 +64,8 @@ static __global__ void drift(V *r, V *v, R dt, Z n)
 
 void evol(int ns, double dt)
 {
-  const int block_sz = 256;
-  const int grid_sz = (n + block_sz - 1) / block_sz;
+  const int block_sz = TILE;
+  const int grid_sz = (n + TILE - 1) / TILE;
 
   R kdt = dt / 2; /* the first kick is a half step */
   Z i;
