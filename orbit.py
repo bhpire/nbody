@@ -10,10 +10,10 @@ if len(sys.argv) == 1:
     exit(0)
 
 input = sys.argv[1]
-r = np.genfromtxt(input)
+name, _ = os.path.splitext(input)
+r = np.genfromtxt(name+'.out' if _ == '' else input)
 
 plt.plot(r[:,0], r[:,1])
 plt.axes().set_aspect('equal')
 
-name, _ = os.path.splitext(input)
 plt.savefig(name+'.png')

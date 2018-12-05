@@ -11,7 +11,8 @@ if len(sys.argv) == 1:
     exit(0)
 
 input = sys.argv[1]
-r = np.genfromtxt(input)
+name, _ = os.path.splitext(input)
+r = np.genfromtxt(name+'.out' if _ == '' else input)
 
 fig, ax = plt.subplots()
 plot,   = ax.plot(r[:10,0], r[:10,1])
@@ -26,5 +27,4 @@ def update(i):
 
 ani = anm.FuncAnimation(fig, update, interval=40)
 
-name, _ = os.path.splitext(input)
 ani.save(name+'.mp4')
