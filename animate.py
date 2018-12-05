@@ -16,15 +16,15 @@ r = np.genfromtxt(input)
 fig, ax = plt.subplots()
 plot,   = ax.plot(r[:10,0], r[:10,1])
 ax.set_aspect('equal')
-ax.set_xlim([-1.2,1.2])
-ax.set_ylim([-1.2,1.2])
+ax.set_xlim([-3,3])
+ax.set_ylim([-2,2])
 
 def update(i):
     plot.set_xdata(r[i:i+10,0])
     plot.set_ydata(r[i:i+10,1])
     return plot
 
-ani = anm.FuncAnimation(fig, update)
+ani = anm.FuncAnimation(fig, update, interval=40)
 
 name, _ = os.path.splitext(input)
 ani.save(name+'.mp4')
