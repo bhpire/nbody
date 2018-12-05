@@ -73,23 +73,20 @@ static inline void kick(double dt)
 {
   int i, j;
 
-  for(i = 0; i < n; ++i) {
-    vector dt_a = {0.0, 0.0, 0.0};
-
-    for(j = 0; j < n; ++j) if(i != j) {
+  for(i = 0; i < n; ++i)
+    for(j = i + 1; j < n; ++j) {
       vector dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
       double rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
       double dt_rrr = dt / (rr * sqrt(rr));
 
-      dt_a.x -= dr.x * dt_rrr;
-      dt_a.y -= dr.y * dt_rrr;
-      dt_a.z -= dr.z * dt_rrr;
-    }
+      v[i].x -= dr.x * dt_rrr;
+      v[i].y -= dr.y * dt_rrr;
+      v[i].z -= dr.z * dt_rrr;
 
-    v[i].x += dt_a.x;
-    v[i].y += dt_a.y;
-    v[i].z += dt_a.z;
-  }
+      v[j].x += dr.x * dt_rrr;
+      v[j].y += dr.y * dt_rrr;
+      v[j].z += dr.z * dt_rrr;
+    }
 }
 
 static inline void drift(double dt)
