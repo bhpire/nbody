@@ -22,19 +22,14 @@ void evol(int n, double dt)
 {
   double kdt = dt / 2; /* the first kick is a half step */
   int i;
-  double rr, rrr, ax, ay, az;
+  double rr, kdt_rrr;
   for(i = 0; i < n; ++i) {
-    /* Get force */
+    /* Get force and kick */
     rr = rx * rx + ry * ry + rz * rz;
-    rrr= rr * sqrt(rr);
-    ax = - rx / rrr;
-    ay = - ry / rrr;
-    az = - rz / rrr;
-
-    /* Kick */
-    vx += ax * kdt;
-    vy += ay * kdt;
-    vz += az * kdt;
+    kdt_rrr = kdt / (rr * sqrt(rr));
+    vx -= rx * kdt_rrr;
+    vy -= ry * kdt_rrr;
+    vz -= rz * kdt_rrr;
 
     /* Drift */
     rx += vx * dt;
@@ -47,15 +42,10 @@ void evol(int n, double dt)
   /* Last half-step correction */
   kdt = dt / 2;
 
-  /* Get new force */
+  /* Get force and kick */
   rr = rx * rx + ry * ry + rz * rz;
-  rrr= rr * sqrt(rr);
-  ax = - rx / rrr;
-  ay = - ry / rrr;
-  az = - rz / rrr;
-
-  /* Kick */
-  vx += ax * dt / 2;
-  vy += ay * dt / 2;
-  vz += az * dt / 2;
+  kdt_rrr = kdt / (rr * sqrt(rr));
+  vx -= rx * kdt_rrr;
+  vy -= ry * kdt_rrr;
+  vz -= rz * kdt_rrr;
 }
