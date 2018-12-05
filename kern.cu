@@ -5,15 +5,15 @@ extern Z n;
 
 V *dev_r, *dev_v;
 
-/*
-static inline void kick(double dt)
+static __global__ void kick(V *v, V *r, R dt, Z n)
 {
-  Z i, j;
+  Z i = blockIdx.x * blockDim.x + threadIdx.x;
+  Z j;
 
-  for(i = 0; i < n; ++i) {
+  if(i < n) {
     V dt_a = {0.0, 0.0, 0.0};
 
-    for(j = 0; j < n; ++j) if(i != j) {
+    for(j = 0; j < n; ++j) {
       V dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
       R rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
       R dt_rrr = dt / (rr * sqrt(rr));
@@ -28,7 +28,7 @@ static inline void kick(double dt)
     v[i].z += dt_a.z;
   }
 }
-*/
+
 static __global__ void drift(V *r, V *v, R dt, Z n)
 {
   Z i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -48,10 +48,10 @@ void evol(int ns, double dt)
   R kdt = dt / 2; /* the first kick is a half step */
   Z i;
   for(i = 0; i < ns; ++i) {
-    /* TODO: kick(kdt); */
-    drift<<<grid_sz, block_sz>>>(dev_r, dev_v, dt, n);
+    kick <<<grid_sz, block_sz>>>(dev_v, dev_r, kdt, n);
+    drift<<<grid_sz, block_sz>>>(dev_r, dev_v,  dt, n);
     kdt = dt; /* all other kicks are full steps */
   }
   /* Last half-step correction */
-  /* TODO: kick(dt / 2); */
+  kick<<<grid_sz, block_sz>>>(dev_v, dev_r, dt / 2, n);
 }

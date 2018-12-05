@@ -7,8 +7,6 @@ extern "C" {
 
 #include <stdio.h>
 
-#define SOFTENING2 (1.0e-6)
-
 typedef struct {
   double x, y, z;
 } vector;
@@ -16,9 +14,11 @@ typedef struct {
 typedef int Z;
 #if defined(DOUBLE) || defined(OUBLE) /* so -DOUBLE works */
 typedef double R;
+#define SOFTENING2 (1.0e-6)
 #define SQRT(x) sqrt(x)
 #else
 typedef float R;
+#define SOFTENING2 (1.0e-6f)
 #define SQRT(x) sqrtf(x)
 #endif
 typedef struct {
