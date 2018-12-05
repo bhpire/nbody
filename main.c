@@ -18,13 +18,19 @@ int main(int argc, char *argv[])
   const double dt = init();
   const int    ns = 1000; /* number of sub-steps between outputs */
 
+  char  name[1024];
+  FILE *file;
+
   signal(SIGINT, handler);
+
+  sprintf(name, "%s.out", argv[0]);
+  file = fopen(name, "w");
 
   while(running) {
     struct timeval t0, t1;
     double wtime; /* "wall" clock time between each outputs */
 
-    dump();
+    dump(file);
 
     gettimeofday(&t0, NULL);
     evol(ns, dt);
@@ -33,6 +39,8 @@ int main(int argc, char *argv[])
     wtime = (t1.tv_sec - t0.tv_sec) + 1.0e-6 * (t1.tv_usec - t0.tv_usec);
     fprintf(stderr, "%g ns/step\n", 1.0e9 * wtime / ns);
   }
+
+  fclose(file);
 
   return 0;
 

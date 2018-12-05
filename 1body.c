@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <math.h>
 #include "nbody.h"
 
@@ -13,9 +12,9 @@ double init(void)
   return 1.0e-4; /* time step size */
 }
 
-int dump(void)
+int dump(FILE *file)
 {
-  return printf("%g %g %g\n", rx, ry, rz) > 0;
+  return fprintf(file, "%g %g %g\n", rx, ry, rz) > 0;
 }
 
 void evol(int n, double dt)
