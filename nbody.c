@@ -25,6 +25,7 @@ static vector sphere(void)
 
 double init(int N)
 {
+  vector p = {0.0, 0.0, 0.0};
   double cbrt_n;
   int i;
 
@@ -34,16 +35,28 @@ double init(int N)
   r = (vector *)malloc(sizeof(vector) * n);
   v = (vector *)malloc(sizeof(vector) * n);
 
+  /* Random initial condition */
   for(i = 0; i < n; ++i) {
     r[i] = sphere();
     v[i] = sphere();
 
-    v[i].x *= cbrt_n;
-    v[i].y *= cbrt_n;
-    v[i].z *= cbrt_n;
+    p.x += v[i].x *= cbrt_n;
+    p.y += v[i].y *= cbrt_n;
+    p.z += v[i].z *= cbrt_n;
   }
 
-  return 1.0e-4 / cbrt_n; /* time step size */
+  /* Make sure the net momentum is zero */
+  p.x /= n;
+  p.y /= n;
+  p.z /= n;
+
+  for(i = 0; i < n; ++i) {
+    v[i].x -= p.x;
+    v[i].y -= p.y;
+    v[i].z -= p.z;
+  }
+
+  return 1.0e-5 / cbrt_n; /* time step size */
 }
 
 int dump(FILE *file)
@@ -65,7 +78,7 @@ static inline void kick(double dt)
 
     for(j = 0; j < n; ++j) if(i != j) {
       vector dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
-      double rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z;
+      double rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
       double dt_rrr = dt / (rr * sqrt(rr));
 
       dt_a.x -= dr.x * dt_rrr;

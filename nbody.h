@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define SOFTENING2 (1.0e-6)
+
 typedef struct {
   double x, y, z;
 } vector;
