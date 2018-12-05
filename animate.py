@@ -26,4 +26,5 @@ def update(i):
 
 ani = anm.FuncAnimation(fig, update)
 
-plt.show()
+name, _ = os.path.splitext(input)
+ani.save(name+'.mp4')
