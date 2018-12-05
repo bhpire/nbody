@@ -16,12 +16,12 @@ int main(int argc, char *argv[])
   const double dt = init();
   const int    ns = 100; /* number of sub-steps between outputs */
 
-  struct timeval t0, t1;
-  double wtime; /* "wall" clock time between each outputs */
-
   signal(SIGINT, handler);
 
   while(running) {
+    struct timeval t0, t1;
+    double wtime; /* "wall" clock time between each outputs */
+
     dump();
 
     gettimeofday(&t0, NULL);
