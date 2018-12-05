@@ -16,7 +16,7 @@ void handler(int signal)
 int main(int argc, char *argv[])
 {
   const double dt = init();
-  const int    ns = 100; /* number of sub-steps between outputs */
+  const int    ns = 1000; /* number of sub-steps between outputs */
 
   signal(SIGINT, handler);
 

@@ -8,9 +8,9 @@ static double vx, vy, vz;
 double init(void)
 {
   rx = 1.0, ry = 0.0, rz = 0.0; /* initial position */
-  vx = 0.0, vy = 1.0, vz = 0.0; /* initial velocity */
+  vx = 0.0, vy = 1.2, vz = 0.0; /* initial velocity */
 
-  return 1.0e-3; /* time step size */
+  return 1.0e-4; /* time step size */
 }
 
 int dump(void)
@@ -20,10 +20,10 @@ int dump(void)
 
 void evol(int n, double dt)
 {
+  double kdt = dt / 2; /* the first kick is a half step */
   int i;
+  double rr, rrr, ax, ay, az;
   for(i = 0; i < n; ++i) {
-    double rr, rrr, ax, ay, az;
-
     /* Get force */
     rr = rx * rx + ry * ry + rz * rz;
     rrr= rr * sqrt(rr);
@@ -32,25 +32,30 @@ void evol(int n, double dt)
     az = - rz / rrr;
 
     /* Kick */
-    vx += ax * dt / 2;
-    vy += ay * dt / 2;
-    vz += az * dt / 2;
+    vx += ax * kdt;
+    vy += ay * kdt;
+    vz += az * kdt;
 
     /* Drift */
     rx += vx * dt;
     ry += vy * dt;
     rz += vz * dt;
 
-    /* Get new force */
-    rr = rx * rx + ry * ry + rz * rz;
-    rrr= rr * sqrt(rr);
-    ax = - rx / rrr;
-    ay = - ry / rrr;
-    az = - rz / rrr;
-
-    /* Kick again */
-    vx += ax * dt / 2;
-    vy += ay * dt / 2;
-    vz += az * dt / 2;
+    /* all other kicks are full steps */
+    kdt = dt;
   }
+  /* Last half-step correction */
+  kdt = dt / 2;
+
+  /* Get new force */
+  rr = rx * rx + ry * ry + rz * rz;
+  rrr= rr * sqrt(rr);
+  ax = - rx / rrr;
+  ay = - ry / rrr;
+  az = - rz / rrr;
+
+  /* Kick */
+  vx += ax * dt / 2;
+  vy += ay * dt / 2;
+  vz += az * dt / 2;
 }
