@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include "nbody.h"
 
-static int n;
-static vector *r, *v;
+static Z n;
+static V *r, *v;
 
-static vector sphere(void)
+static V sphere(void)
 {
-  vector r;
-  double x, y, z, rr;
+  V r;
+  R x, y, z, rr;
 
   do {
     x  = 2.0 * rand() / RAND_MAX - 1.0;
@@ -25,15 +25,15 @@ static vector sphere(void)
 
 double init(int N)
 {
-  vector p = {0.0, 0.0, 0.0};
-  double cbrt_n;
-  int i;
+  V p = {0.0, 0.0, 0.0};
+  R cbrt_n;
+  Z i;
 
   n      = N;
   cbrt_n = pow(n, 1.0/3.0);
 
-  r = (vector *)malloc(sizeof(vector) * n);
-  v = (vector *)malloc(sizeof(vector) * n);
+  r = (V *)malloc(sizeof(V) * n);
+  v = (V *)malloc(sizeof(V) * n);
 
   /* Random initial condition */
   for(i = 0; i < n; ++i) {
@@ -61,7 +61,7 @@ double init(int N)
 
 int dump(FILE *file)
 {
-  int i;
+  Z i;
   for(i = 0; i < n - 1; ++i)
     fprintf(file, "%g %g %g, ", r[i].x, r[i].y, r[i].z);
   fprintf(file, "%g %g %g\n", r[i].x, r[i].y, r[i].z);
@@ -71,15 +71,15 @@ int dump(FILE *file)
 
 static inline void kick(double dt)
 {
-  int i, j;
+  Z i, j;
 
   for(i = 0; i < n; ++i) {
-    vector dt_a = {0.0, 0.0, 0.0};
+    V dt_a = {0.0, 0.0, 0.0};
 
     for(j = 0; j < n; ++j) if(i != j) {
-      vector dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
-      double rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
-      double dt_rrr = dt / (rr * sqrt(rr));
+      V dr     = {r[i].x - r[j].x, r[i].y - r[j].y, r[i].z - r[j].z};
+      R rr     = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z + SOFTENING2;
+      R dt_rrr = dt / (rr * sqrt(rr));
 
       dt_a.x -= dr.x * dt_rrr;
       dt_a.y -= dr.y * dt_rrr;
@@ -92,9 +92,9 @@ static inline void kick(double dt)
   }
 }
 
-static inline void drift(double dt)
+static inline void drift(R dt)
 {
-  int i;
+  Z i;
 
   for(i = 0; i < n; ++i) {
     r[i].x += v[i].x * dt;
@@ -105,8 +105,8 @@ static inline void drift(double dt)
 
 void evol(int n, double dt)
 {
-  double kdt = dt / 2; /* the first kick is a half step */
-  int i;
+  R kdt = dt / 2; /* the first kick is a half step */
+  Z i;
   for(i = 0; i < n; ++i) {
     kick(kdt);
     drift(dt);
