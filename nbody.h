@@ -2,7 +2,7 @@
 #define NBODY_H
 
 double init(void);
-void step(double);
+void evol(int, double);
 int dump(void);
 
 #endif

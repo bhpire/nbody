@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 {
   const double dt = init();
   const int    ns = 100; /* number of sub-steps between outputs */
-  int i; /* sub-step index */
 
   struct timeval t0, t1;
   double wtime; /* "wall" clock time between each outputs */
@@ -26,8 +25,7 @@ int main(int argc, char *argv[])
     dump();
 
     gettimeofday(&t0, NULL);
-    for(i = 0; i < ns; ++i)
-      step(dt);
+    evol(ns, dt);
     gettimeofday(&t1, NULL);
 
     wtime = (t1.tv_sec - t0.tv_sec) + 1.0e-6 * (t1.tv_usec - t0.tv_usec);

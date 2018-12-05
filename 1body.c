@@ -18,36 +18,39 @@ int dump(void)
   return printf("%g %g %g\n", rx, ry, rz) > 0;
 }
 
-void step(double dt)
+void evol(int n, double dt)
 {
-  double rr, rrr, ax, ay, az;
+  int i;
+  for(i = 0; i < n; ++i) {
+    double rr, rrr, ax, ay, az;
 
-  /* Get force */
-  rr = rx * rx + ry * ry + rz * rz;
-  rrr= rr * sqrt(rr);
-  ax = - rx / rrr;
-  ay = - ry / rrr;
-  az = - rz / rrr;
+    /* Get force */
+    rr = rx * rx + ry * ry + rz * rz;
+    rrr= rr * sqrt(rr);
+    ax = - rx / rrr;
+    ay = - ry / rrr;
+    az = - rz / rrr;
 
-  /* Kick */
-  vx += ax * dt / 2;
-  vy += ay * dt / 2;
-  vz += az * dt / 2;
+    /* Kick */
+    vx += ax * dt / 2;
+    vy += ay * dt / 2;
+    vz += az * dt / 2;
 
-  /* Drift */
-  rx += vx * dt;
-  ry += vy * dt;
-  rz += vz * dt;
+    /* Drift */
+    rx += vx * dt;
+    ry += vy * dt;
+    rz += vz * dt;
 
-  /* Get new force */
-  rr = rx * rx + ry * ry + rz * rz;
-  rrr= rr * sqrt(rr);
-  ax = - rx / rrr;
-  ay = - ry / rrr;
-  az = - rz / rrr;
+    /* Get new force */
+    rr = rx * rx + ry * ry + rz * rz;
+    rrr= rr * sqrt(rr);
+    ax = - rx / rrr;
+    ay = - ry / rrr;
+    az = - rz / rrr;
 
-  /* Kick again */
-  vx += ax * dt / 2;
-  vy += ay * dt / 2;
-  vz += az * dt / 2;
+    /* Kick again */
+    vx += ax * dt / 2;
+    vy += ay * dt / 2;
+    vz += az * dt / 2;
+  }
 }
