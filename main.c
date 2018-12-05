@@ -9,6 +9,8 @@ void handler(int signal)
 {
   running = 0;
   fputs("STOP", stderr);
+
+  (void)signal; /* silence unused parameter warning */
 }
 
 int main(int argc, char *argv[])
@@ -33,4 +35,7 @@ int main(int argc, char *argv[])
   }
 
   return 0;
+
+  (void)argc; /* silence unused parameter warning */
+  (void)argv; /* silence unused parameter warning */
 }
