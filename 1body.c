@@ -20,10 +20,11 @@ int dump(void)
 
 void step(double dt)
 {
-  double rrr, ax, ay, az;
+  double rr, rrr, ax, ay, az;
 
   /* Get force */
-  rrr= pow(rx * rx + ry * ry + rz * rz, 1.5);
+  rr = rx * rx + ry * ry + rz * rz;
+  rrr= rr * sqrt(rr);
   ax = - rx / rrr;
   ay = - ry / rrr;
   az = - rz / rrr;
@@ -39,7 +40,8 @@ void step(double dt)
   rz += vz * dt;
 
   /* Get new force */
-  rrr= pow(rx * rx + ry * ry + rz * rz, 1.5);
+  rr = rx * rx + ry * ry + rz * rz;
+  rrr= rr * sqrt(rr);
   ax = - rx / rrr;
   ay = - ry / rrr;
   az = - rz / rrr;
