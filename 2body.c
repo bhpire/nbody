@@ -23,7 +23,7 @@ int dump(FILE *file)
 
 void evol(int n, double dt)
 {
-  vector dr, dv;
+  vector dr;
   double rr, kdt_rrr;
 
   double kdt = dt / 2; /* the first kick is a half step */
@@ -38,16 +38,13 @@ void evol(int n, double dt)
     rr = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z;
     kdt_rrr = kdt / (rr * sqrt(rr));
 
-    dv.x = dr.x * kdt_rrr;
-    dv.y = dr.y * kdt_rrr;
-    dv.z = dr.z * kdt_rrr;
+    v1.x -= dr.x * kdt_rrr;
+    v1.y -= dr.y * kdt_rrr;
+    v1.z -= dr.z * kdt_rrr;
 
-    v1.x -= dv.x;
-    v1.y -= dv.y;
-    v1.z -= dv.z;
-    v2.x += dv.x;
-    v2.y += dv.y;
-    v2.z += dv.z;
+    v2.x += dr.x * kdt_rrr;
+    v2.y += dr.y * kdt_rrr;
+    v2.z += dr.z * kdt_rrr;
 
     /* Drift */
     r1.x += v1.x * dt;
@@ -72,14 +69,11 @@ void evol(int n, double dt)
   rr = dr.x * dr.x + dr.y * dr.y + dr.z * dr.z;
   kdt_rrr = kdt / (rr * sqrt(rr));
 
-  dv.x = dr.x * kdt_rrr;
-  dv.y = dr.y * kdt_rrr;
-  dv.z = dr.z * kdt_rrr;
+  v1.x += dr.x * kdt_rrr;
+  v1.y += dr.y * kdt_rrr;
+  v1.z += dr.z * kdt_rrr;
 
-  v1.x -= dv.x;
-  v1.y -= dv.y;
-  v1.z -= dv.z;
-  v2.x += dv.x;
-  v2.y += dv.y;
-  v2.z += dv.z;
+  v2.x -= dr.x * kdt_rrr;
+  v2.y -= dr.y * kdt_rrr;
+  v2.z -= dr.z * kdt_rrr;
 }
